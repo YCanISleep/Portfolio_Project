@@ -25,7 +25,6 @@ p+p{margin-top:.8rem}
   -webkit-background-clip:text;background-clip:text}
 @keyframes fall{from{transform:translateY(-100%)}to{transform:translateY(100vh)}}
 
-/* ---------- Navbar (flexbox + sticky) ---------- */
 nav{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;
   flex-wrap:wrap;gap:.6rem 1.5rem;padding:.8rem 5%;background:rgba(0,0,0,.88);
   border-bottom:1px solid var(--g3);backdrop-filter:blur(6px)}
