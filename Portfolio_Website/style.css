@@ -1,0 +1,140 @@
+/* ===== Matrix Portfolio — HTML + CSS only ===== */
+:root{
+  --surf:#02140a; --g1:#00ff41; --g2:#008f11; --g3:#0b3d1a; --txt:#c8ffd4;
+  /* gibberish alphabets, reused by the rain and the "encrypted" overlays */
+  --a:"ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ZXC:.=*+<>¦|";
+  --b:"ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ7Z2T4#$%&@8Q9K5W3M1X0J6E=-_/[]{}";
+  --g:var(--a) var(--b) var(--a) var(--b);
+  --h:var(--g) var(--g) var(--g) var(--g);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#000;color:var(--txt);font:16px/1.65 "Courier New",Consolas,monospace}
+a{color:var(--g1);text-decoration:none}
+a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--g1);outline-offset:3px}
+h1,h2,h3{line-height:1.15}
+p+p{margin-top:.8rem}
+
+/* ---------- Matrix rain (fixed, behind everything) ---------- */
+.rain{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+  background:radial-gradient(ellipse at center,#001a06,#000 72%)}
+.rain i{position:absolute;top:0;left:var(--x);font-size:var(--f);line-height:1;opacity:.5;
+  writing-mode:vertical-rl;text-orientation:upright;animation:fall var(--d) linear var(--s) infinite}
+.rain i::before{content:var(--a) var(--b);display:block;color:transparent;
+  background:linear-gradient(to bottom,transparent,var(--g2) 60%,#d7ffe0);
+  -webkit-background-clip:text;background-clip:text}
+@keyframes fall{from{transform:translateY(-100%)}to{transform:translateY(100vh)}}
+
+/* ---------- Navbar (flexbox + sticky) ---------- */
+nav{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:.6rem 1.5rem;padding:.8rem 5%;background:rgba(0,0,0,.88);
+  border-bottom:1px solid var(--g3);backdrop-filter:blur(6px)}
+.logo{font-weight:700;font-size:1.2rem;letter-spacing:.1em;color:var(--g1);text-shadow:0 0 10px var(--g1)}
+.logo::after{content:"_";animation:blink 1s steps(1) infinite}
+nav ul{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1.4rem;list-style:none}
+nav ul a{position:relative;color:var(--txt);transition:color .25s}
+nav ul a::after{content:"";position:absolute;left:0;bottom:-3px;height:2px;width:0;background:var(--g1);
+  box-shadow:0 0 8px var(--g1);transition:width .3s}
+nav ul a:hover{color:var(--g1)}
+nav ul a:hover::after{width:100%}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- Buttons ---------- */
+.btns{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.6rem}
+.btn{display:inline-flex;align-items:center;padding:.6rem 1.3rem;border:1px solid var(--g1);color:var(--g1);
+  background:transparent;font:inherit;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
+.btn:hover,.btn:focus-visible{background:var(--g1);color:#000;box-shadow:0 0 20px var(--g1)}
+
+/* ---------- Layout ---------- */
+section{max-width:1100px;margin:0 auto;padding:5rem 5% 2rem;scroll-margin-top:60px}
+section>h2{font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:1.8rem}
+@supports (animation-timeline:view()){
+  section+section{animation:pop linear both;animation-timeline:view();animation-range:entry 0% entry 35%}
+}
+@keyframes pop{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+
+/* ---------- Glitching headings (always readable) ---------- */
+.glitch{position:relative;color:var(--g1);text-shadow:0 0 14px rgba(0,255,65,.6)}
+.glitch::before,.glitch::after{content:attr(data-t);position:absolute;inset:0;pointer-events:none}
+.glitch::before{color:#0ff;animation:slice 2.6s steps(1) infinite}
+.glitch::after{color:#f0f;animation:slice 3.1s steps(1) infinite reverse}
+@keyframes slice{
+  0%,100%{clip-path:inset(0 0 100% 0)}
+  10%{clip-path:inset(10% 0 62% 0);transform:translate(-4px)}
+  30%{clip-path:inset(62% 0 8% 0);transform:translate(3px)}
+  50%{clip-path:inset(32% 0 40% 0);transform:translate(-2px)}
+  70%{clip-path:inset(84% 0 0 0);transform:translate(4px)}
+}
+
+/* ---------- THE EFFECT: encrypted overlay, cleared on hover ---------- */
+.scr{position:relative;overflow:hidden}
+.scr::after{content:var(--h);position:absolute;z-index:2;top:0;left:0;right:0;height:calc(100% + 4em);
+  padding:inherit;overflow:hidden;background:var(--surf);color:var(--g1);
+  font-size:.8rem;line-height:1.35;letter-spacing:.08em;word-break:break-all;
+  text-shadow:0 0 6px var(--g1);pointer-events:none;
+  animation:run .9s steps(5) infinite,flick .3s steps(2) infinite;transition:opacity .4s .3s}
+.scr:hover::after,.scr:focus-within::after{opacity:0;transition-delay:0s;animation-play-state:paused}
+.scr:hover>*,.scr:focus-within>*{animation:decode .5s ease-out}
+@keyframes run{to{transform:translateY(-4em)}}
+@keyframes flick{50%{color:#7dffa0}}
+@keyframes decode{0%{text-shadow:3px 0 #f0f,-3px 0 #0ff;transform:skewX(8deg)}100%{text-shadow:none;transform:none}}
+.hint{margin-top:.8rem;color:var(--g2);font-size:.85rem}
+
+/* ---------- Cards / grids ---------- */
+.card{padding:1.3rem;background:var(--surf);border:1px solid var(--g3);
+  transition:border-color .3s,box-shadow .3s}
+.card:hover,.card:focus-within{border-color:var(--g1);box-shadow:0 0 24px rgba(0,255,65,.35),inset 0 0 18px rgba(0,255,65,.12)}
+.card h3{color:var(--g1);margin-bottom:.5rem}
+.grid{display:grid;gap:1.2rem}
+.cols-2{grid-template-columns:repeat(2,1fr)}
+.projects{grid-template-columns:repeat(3,1fr)}
+.bento{grid-template-columns:repeat(4,1fr)}
+.wide{grid-column:span 2}
+.pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
+.pills span{padding:.1rem .8rem;border:1px solid var(--g2);border-radius:99px;font-size:.85rem;transition:background .2s,color .2s}
+.pills span:hover{background:var(--g1);color:#000}
+.tag{color:var(--g2);font-size:.85rem;margin:.6rem 0}
+
+/* ---------- Hero (flexbox) ---------- */
+#hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center;padding-top:3rem}
+#hero h1{font-size:clamp(2.4rem,9vw,5.5rem);margin-bottom:1.5rem}
+.term{max-width:620px;border:1px solid var(--g2);background:var(--surf);box-shadow:0 0 30px rgba(0,255,65,.15)}
+.bar{display:flex;gap:.4rem;padding:.5rem .8rem;border-bottom:1px solid var(--g3)}
+.bar b{width:10px;height:10px;border-radius:50%;background:var(--g2)}
+.term-body{padding:1rem 1.2rem}
+.term-body p{margin:0}
+.term-body .out{color:var(--g1);margin-bottom:.7rem}
+
+/* ---------- Timeline ---------- */
+.timeline{position:relative;padding-left:1.8rem;border-left:2px solid var(--g3);display:grid;gap:1.2rem}
+.timeline .item{position:relative}
+.timeline .item::before{content:"";position:absolute;left:-2.2rem;top:1.5rem;width:12px;height:12px;border-radius:50%;
+  background:var(--g1);box-shadow:0 0 12px var(--g1)}
+
+/* ---------- Contact form ---------- */
+label{display:block;margin-top:.8rem;color:var(--g2)}
+input,textarea{width:100%;margin-top:.3rem;padding:.6rem;background:#000;border:1px solid var(--g2);
+  color:var(--g1);font:inherit;transition:border-color .25s,box-shadow .25s}
+input:focus,textarea:focus{border-color:var(--g1);box-shadow:0 0 12px rgba(0,255,65,.5)}
+textarea{min-height:110px;resize:vertical}
+form .btn{margin-top:1rem}
+.links{list-style:none;display:grid;gap:.4rem}
+
+footer{margin-top:4rem;padding:2rem 5%;text-align:center;color:var(--g2);border-top:1px solid var(--g3);background:rgba(0,0,0,.85)}
+footer a{margin:0 .6rem}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  .projects,.bento{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:600px){
+  section{padding-top:3.5rem}
+  .projects,.bento,.cols-2{grid-template-columns:1fr}
+  .wide{grid-column:auto}
+  nav{justify-content:center}
+  nav ul{justify-content:center;gap:.3rem 1rem;font-size:.9rem}
+  .btn{flex:1 1 100%;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){
+  *,::before,::after{animation:none!important;transition:none!important}
+}
